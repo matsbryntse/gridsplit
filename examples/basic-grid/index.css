@@ -1,0 +1,23 @@
+.events-field .x-form-text-wrap:before,
+.resources-field .x-form-text-wrap:before {
+    font-family  : FontAwesome;
+    margin-right : 5px;
+    position     : absolute;
+    top          : 8px;
+    left         : 5px;
+    color        : #ff9363;
+}
+
+.resources-field .x-form-text-wrap:before {
+    content : "\f0c0";
+}
+
+.events-field .x-form-text-wrap:before {
+    content : "\f133";
+}
+
+.events-field input,
+.resources-field input {
+    padding-left : 25px;
+}
+
