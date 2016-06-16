@@ -1,3 +1,27 @@
+/*
+ The MIT License (MIT)
+
+ Copyright (c) 2016 Mats Bryntse
+
+ Permission is hereby granted, free of charge, to any person obtaining a copy
+ of this software and associated documentation files (the "Software"), to deal
+ in the Software without restriction, including without limitation the rights
+ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ copies of the Software, and to permit persons to whom the Software is
+ furnished to do so, subject to the following conditions:
+
+ The above copyright notice and this permission notice shall be included in all
+ copies or substantial portions of the Software.
+
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ SOFTWARE.
+ */
+
 Ext.define('UX.grid.Split', {
 
     alias           : 'plugin.gridsplit',
@@ -6,6 +30,17 @@ Ext.define('UX.grid.Split', {
     splitCls        : 'ux-grid-split',
     resizeHandleCls : 'ux-grid-split-resize-handle',
     triggerEvent    : 'itemcontextmenu',
+    splitText       : 'Split',
+    mergeText       : 'Hide split section',
+
+    menuConfig : {
+        plain : true,
+        items : [
+            {
+                handler : 'onMenuItemClick'
+            }
+        ]
+    },
 
     init : function (grid) {
 
@@ -28,28 +63,22 @@ Ext.define('UX.grid.Split', {
 
     onMenuTriggerEvent : function (e) {
         this.menu.showAt(e.getXY());
-        this.menu.items.first().setText(this.isSplit() ? 'Hide split section' : 'Split');
+        this.menu.items.first().setText(this.isSplit() ? this.mergeText : this.splitText);
         this.splitPos = e.getY() - this.grid.getView().getEl().getY();
 
         e.stopEvent();
     },
 
     createMenu : function () {
-        this.menu = new Ext.menu.Menu({
-            items : [
-                {
-                    text    : 'Split',
-                    handler : function (menu, e) {
-                        if (this.isSplit()) {
-                            this.merge();
-                        } else {
-                            this.split(this.splitPos);
-                        }
-                    },
-                    scope   : this
-                }
-            ]
-        })
+        this.menu = new Ext.menu.Menu(Ext.apply({ defaults : { scope : this }}, this.menuConfig));
+    },
+
+    onMenuItemClick : function (menu, e) {
+        if (this.isSplit()) {
+            this.merge();
+        } else {
+            this.split(this.splitPos);
+        }
     },
 
     cloneGrid : function (pos) {
@@ -72,9 +101,11 @@ Ext.define('UX.grid.Split', {
             margin      : 0,
             padding     : 0,
             store       : this.grid.store,
-            layout      : 'border',
             columns     : this.grid.columns.map(function (col) {
-                return col.cloneConfig();
+                return col.cloneConfig({
+                    width : col.getWidth(),
+                    flex  : col.flex
+                });
             })
         }
     },
@@ -120,7 +151,7 @@ Ext.define('UX.grid.Split', {
         this.setupColumnSync();
     },
 
-    setupColumnSync : function() {
+    setupColumnSync : function () {
         // TODO sync on col add, remove, resize, reorder etc
     },
 
