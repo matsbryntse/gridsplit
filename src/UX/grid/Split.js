@@ -116,6 +116,12 @@ Ext.define('UX.grid.Split', {
 
         mainScroll.addPartner(cloneScroll, 'x');
         mainGrid.getHeaderContainer().getScrollable().addPartner(cloneScroll, 'x');
+
+        this.setupColumnSync();
+    },
+
+    setupColumnSync : function() {
+        // TODO sync on col add, remove, resize, reorder etc
     },
 
     destroy : function () {
