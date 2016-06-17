@@ -22,7 +22,7 @@
  SOFTWARE.
  */
 /**
- @class UX.grid.Split
+ @class UX.plugin.grid.Split
 
  A grid plugin adding the Excel 'split' feature. Sample usage:
 
@@ -46,7 +46,7 @@
     });
 
  */
-Ext.define('UX.grid.Split', {
+Ext.define('UX.plugin.grid.Split', {
 
     alias           : 'plugin.gridsplit',
     menu            : null,

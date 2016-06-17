@@ -4,7 +4,7 @@ Ext.Loader.setConfig({
     }
 })
 Ext.require(
-    [ 'UX.grid.Split' ]
+    [ 'UX.plugin.grid.Split' ]
 )
 
 Ext.onReady(function () {
