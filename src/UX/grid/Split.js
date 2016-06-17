@@ -21,7 +21,31 @@
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  SOFTWARE.
  */
+/**
+ @class UX.grid.Split
 
+ A grid plugin adding the Excel 'split' feature. Sample usage:
+
+    new Ext.grid.Panel({
+        store       : store,
+        columns     : [ {
+            text      : 'Company<br>Name', // Two line header! Test header height synchronization!
+            width     : 200,
+            dataIndex : 'company'
+        }, {
+            text      : 'Price',
+            width     : 97,
+            dataIndex : 'price'
+        } ],
+        height      : 650,
+        width       : 800,
+        renderTo    : document.body,
+        plugins     : [
+            'gridsplit'
+        ]
+    });
+
+ */
 Ext.define('UX.grid.Split', {
 
     alias           : 'plugin.gridsplit',
@@ -140,6 +164,11 @@ Ext.define('UX.grid.Split', {
     },
 
     setupSynchronization : function () {
+        this.setupScrollSynchronization();
+        this.setupColumnSync();
+    },
+
+    setupScrollSynchronization : function () {
         var mainGrid    = this.grid.normalGrid || this.grid;
         var gridClone   = this.gridClone.normalGrid || this.gridClone;
         var mainScroll  = mainGrid.getView().getScrollable();
@@ -147,8 +176,6 @@ Ext.define('UX.grid.Split', {
 
         mainScroll.addPartner(cloneScroll, 'x');
         mainGrid.getHeaderContainer().getScrollable().addPartner(cloneScroll, 'x');
-
-        this.setupColumnSync();
     },
 
     setupColumnSync : function () {
