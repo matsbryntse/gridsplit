@@ -81,10 +81,10 @@ Ext.onReady(function () {
 
     // create the Grid
     var grid = Ext.create('Ext.grid.Panel', {
-        store       : store,
-        columnLines : true,
-        columns     : [ {
-            text      : 'Company<br>Name', // Two line header! Test header height synchronization!
+        store      : store,
+        region     : 'center',
+        columns    : [ {
+            text      : 'Company Name',
             width     : 200,
             sortable  : false,
             dataIndex : 'company',
@@ -128,24 +128,42 @@ Ext.onReady(function () {
                 xtype : 'datefield'
             }
         } ],
-        selModel    : {
+        selModel   : {
             selType : 'cellmodel'
         },
-        height      : 650,
-        width       : 800,
-        title       : 'Locking Grid Column',
-        renderTo    : document.body,
-        viewConfig  : {
+        title      : 'Locking Grid Column',
+        viewConfig : {
             stripeRows : true
         },
-        buttons     : [ {
-            text : 'Foo'
-        } ],
-        plugins     : [
+        plugins    : [
             'gridsplit',
             'cellediting'
-        ]
+        ],
+
+        header : {
+            items : [
+                {
+                    xtype        : 'button',
+                    text         : 'Split',
+                    enableToggle : true,
+                    handler      : function () {
+                        this.pressed ? grid.split() : grid.merge();
+                    }
+                }
+            ]
+        }
     });
 
+    new Ext.Viewport({
+        layout : 'border',
+        items  : [
+            {
+                xtype     : 'component',
+                region    : 'north',
+                contentEl : 'example-description'
+            },
+            grid
+        ]
+    })
 
 });

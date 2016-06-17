@@ -73,6 +73,9 @@ Ext.define('UX.plugin.grid.Split', {
         grid.on('afterrender', function() {
             this.setGrid(grid);
         }, this);
+
+        grid.split = Ext.Function.bind(this.split, this);
+        grid.merge = Ext.Function.bind(this.merge, this);
     },
 
     setGrid : function (grid) {
@@ -108,7 +111,7 @@ Ext.define('UX.plugin.grid.Split', {
     cloneGrid : function (pos) {
         return {
             dock      : 'bottom',
-            height    : this.getGridViewHeight() - pos,
+            height    : pos ? (this.getGridViewHeight() - pos) : this.getGridViewHeight()/2,
             resizable : {
                 pinned  : true,
                 handles : 'n',
@@ -125,16 +128,20 @@ Ext.define('UX.plugin.grid.Split', {
             margin      : 0,
             padding     : 0,
             store       : this.grid.store,
-            columns     : this.grid.columns.map(function (col) {
-                return col.cloneConfig({
-                    width : col.getWidth(),
-                    flex  : col.flex
-                });
-            })
+            columns     : this.grid.columns.map(this.cloneColumn, this)
         }
     },
 
+    cloneColumn : function (col) {
+        return col.cloneConfig({
+            width : col.getWidth(),
+            flex  : col.flex
+        });
+    },
+
     split : function (pos) {
+        if (this.isSplit()) return;
+
         this.gridClone = this.grid.addDocked(this.cloneGrid(pos))[ 0 ];
 
         this.grid.addCls(this.splitCls);
@@ -178,7 +185,7 @@ Ext.define('UX.plugin.grid.Split', {
         mainGrid.getHeaderContainer().getScrollable().addPartner(cloneScroll, 'x');
     },
 
-    setupColumnSync : function () {
+    setupColumnSync : function (headerCt) {
         // TODO sync on col add, remove, resize, reorder etc
     },
 
