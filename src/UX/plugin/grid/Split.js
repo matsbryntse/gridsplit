@@ -27,7 +27,7 @@
 
  A grid plugin adding the Excel 'split' feature. Sample usage:
 
-    new Ext.grid.Panel({
+ new Ext.grid.Panel({
         store       : store,
         columns     : [ {
             text      : 'Company<br>Name', // Two line header! Test header height synchronization!
@@ -102,7 +102,7 @@ Ext.define('UX.plugin.grid.Split', {
     },
 
     createMenu : function () {
-        this.menu = new Ext.menu.Menu(Ext.apply({ defaults : { scope : this }}, this.menuConfig));
+        this.menu = new Ext.menu.Menu(Ext.apply({ defaults : { scope : this } }, this.menuConfig));
     },
 
     onMenuItemClick : function (menu, e) {
@@ -115,9 +115,9 @@ Ext.define('UX.plugin.grid.Split', {
 
     cloneGrid : function (pos) {
         return Ext.applyIf({
-            __cloned      : true,
+            __cloned  : true,
             dock      : 'bottom',
-            height    : pos ? (this.getGridViewHeight() - pos) : this.getGridViewHeight()/2,
+            height    : pos ? (this.getGridViewHeight() - pos) : this.getGridViewHeight() / 2,
             resizable : {
                 pinned  : true,
                 handles : 'n',
