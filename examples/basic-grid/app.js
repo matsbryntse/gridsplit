@@ -81,11 +81,13 @@ Ext.onReady(function () {
 
     // create the Grid
     var grid = Ext.create('Ext.grid.Panel', {
-        store      : store,
-        region     : 'center',
-        columns    : [ {
+        store       : store,
+        region      : 'center',
+        columnLines : true,
+        split       : true, // TODO conflicting with Ext
+        columns     : [ {
             text      : 'Company Name',
-            width     : 200,
+            flex      : 1,
             sortable  : false,
             dataIndex : 'company',
             editor    : {
@@ -128,14 +130,14 @@ Ext.onReady(function () {
                 xtype : 'datefield'
             }
         } ],
-        selModel   : {
+        selModel    : {
             selType : 'cellmodel'
         },
-        title      : 'Locking Grid Column',
-        viewConfig : {
+        title       : 'Locking Grid Column',
+        viewConfig  : {
             stripeRows : true
         },
-        plugins    : [
+        plugins     : [
             'gridsplit',
             'cellediting'
         ],
@@ -146,6 +148,7 @@ Ext.onReady(function () {
                     xtype        : 'button',
                     text         : 'Split',
                     enableToggle : true,
+                    pressed      : true,
                     handler      : function () {
                         this.pressed ? grid.split() : grid.merge();
                     }

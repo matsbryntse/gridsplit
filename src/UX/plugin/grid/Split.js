@@ -21,6 +21,7 @@
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  SOFTWARE.
  */
+
 /**
  @class UX.plugin.grid.Split
 
@@ -70,12 +71,9 @@ Ext.define('UX.plugin.grid.Split', {
 
         this.createMenu();
 
-        grid.on('afterrender', function() {
+        grid.on('afterlayout', function () {
             this.setGrid(grid);
-        }, this);
-
-        grid.split = Ext.Function.bind(this.split, this);
-        grid.merge = Ext.Function.bind(this.merge, this);
+        }, this, { single : true });
     },
 
     setGrid : function (grid) {
@@ -86,6 +84,13 @@ Ext.define('UX.plugin.grid.Split', {
         }, this);
 
         grid.getEl().on('contextmenu', this.onMenuTriggerEvent, this, { delegate : '.' + this.resizeHandleCls });
+
+        if (grid.split) {
+            this.split();
+        }
+
+        grid.split = Ext.Function.bind(this.split, this);
+        grid.merge = Ext.Function.bind(this.merge, this);
     },
 
     onMenuTriggerEvent : function (e) {
@@ -109,7 +114,8 @@ Ext.define('UX.plugin.grid.Split', {
     },
 
     cloneGrid : function (pos) {
-        return {
+        return Ext.applyIf({
+            __cloned      : true,
             dock      : 'bottom',
             height    : pos ? (this.getGridViewHeight() - pos) : this.getGridViewHeight()/2,
             resizable : {
@@ -127,9 +133,10 @@ Ext.define('UX.plugin.grid.Split', {
             tbar        : null,
             margin      : 0,
             padding     : 0,
-            store       : this.grid.store,
+            split       : false,
+            // store       : this.grid.store,
             columns     : this.grid.columns.map(this.cloneColumn, this)
-        }
+        }, this.grid.initialConfig);
     },
 
     cloneColumn : function (col) {
@@ -148,16 +155,22 @@ Ext.define('UX.plugin.grid.Split', {
 
         var resizeHandle = this.grid.getEl().down('.x-docked .x-resizable-handle-north');
         resizeHandle.addCls(this.resizeHandleCls);
-        
+
         this.gridClone.mon(resizeHandle, 'dblclick', this.merge, this);
 
         this.setupSynchronization();
+
+        this.grid.fireEvent('split', this);
     },
 
     merge : function () {
-        this.grid.removeCls(this.splitCls);
-        this.gridClone.destroy();
-        this.gridClone = null;
+        if (this.isSplit()) {
+            this.grid.removeCls(this.splitCls);
+            this.gridClone.destroy();
+            this.gridClone = null;
+
+            this.grid.fireEvent('merge', this);
+        }
     },
 
     isSplit : function () {
