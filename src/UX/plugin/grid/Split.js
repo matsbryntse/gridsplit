@@ -24,7 +24,8 @@
 
 /**
  @class UX.plugin.grid.Split
-
+ @extends Ext.AbstractPlugin
+ 
  A grid plugin adding the Excel 'split' feature. Sample usage:
 
  new Ext.grid.Panel({
@@ -48,7 +49,7 @@
 
  */
 Ext.define('UX.plugin.grid.Split', {
-
+    extend          : 'Ext.AbstractPlugin',
     alias           : 'plugin.gridsplit',
     menu            : null,
     gridClone       : null,
@@ -57,6 +58,8 @@ Ext.define('UX.plugin.grid.Split', {
     triggerEvent    : 'itemcontextmenu',
     splitText       : 'Split',
     mergeText       : 'Hide split section',
+
+    enableScrollSync : true,
 
     menuConfig : {
         plain : true,
@@ -85,7 +88,7 @@ Ext.define('UX.plugin.grid.Split', {
 
         grid.getEl().on('contextmenu', this.onMenuTriggerEvent, this, { delegate : '.' + this.resizeHandleCls });
 
-        if (grid.split) {
+        if (grid.gridSplit) {
             this.split();
         }
 
@@ -114,7 +117,10 @@ Ext.define('UX.plugin.grid.Split', {
     },
 
     cloneGrid : function (pos) {
-        return Ext.applyIf({
+        var config = {};
+        Ext.apply(config, this.getCloneConfig(this.grid));
+
+        Ext.apply(config, {
             __cloned  : true,
             dock      : 'bottom',
             height    : pos ? (this.getGridViewHeight() - pos) : this.getGridViewHeight() / 2,
@@ -124,6 +130,7 @@ Ext.define('UX.plugin.grid.Split', {
                 dynamic : true
             },
 
+            id          : null,
             xtype       : this.grid.xtype,
             dock        : 'bottom',
             hideHeaders : true,
@@ -131,13 +138,17 @@ Ext.define('UX.plugin.grid.Split', {
             bbar        : null,
             buttons     : null,
             tbar        : null,
+            tools       : null,
             margin      : 0,
             padding     : 0,
-            split       : false,
-            // store       : this.grid.store,
+            gridSplit   : false,
             columns     : this.grid.columns.map(this.cloneColumn, this)
         }, this.grid.initialConfig);
+
+        return config;
     },
+
+    getCloneConfig : function(grid) {},
 
     cloneColumn : function (col) {
         return col.cloneConfig({
@@ -184,7 +195,9 @@ Ext.define('UX.plugin.grid.Split', {
     },
 
     setupSynchronization : function () {
-        this.setupScrollSynchronization();
+        if (this.enableScrollSync) {
+            this.setupScrollSynchronization();
+        }
         this.setupColumnSync();
     },
 

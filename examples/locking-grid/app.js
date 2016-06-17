@@ -83,6 +83,7 @@ Ext.onReady(function () {
     var grid = Ext.create('Ext.grid.Panel', {
         store       : store,
         columnLines : true,
+        gridSplit   : true,
         columns     : [ {
             text      : 'Company<br>Name', // Two line header! Test header height synchronization!
             locked    : true,

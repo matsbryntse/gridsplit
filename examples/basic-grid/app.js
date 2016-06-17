@@ -84,7 +84,7 @@ Ext.onReady(function () {
         store       : store,
         region      : 'center',
         columnLines : true,
-        split       : true, // TODO conflicting with Ext
+        gridSplit   : true, 
         columns     : [ {
             text      : 'Company Name',
             flex      : 1,
