@@ -163,6 +163,7 @@ Ext.define('UX.plugin.grid.Split', {
         this.gridClone = this.grid.addDocked(this.cloneGrid(pos))[ 0 ];
 
         this.grid.addCls(this.splitCls);
+        this.gridClone.addCls('ux-grid-clone');
 
         var resizeHandle = this.grid.getEl().down('.x-docked .x-resizable-handle-north');
         resizeHandle.addCls(this.resizeHandleCls);

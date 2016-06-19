@@ -1,3 +1,7 @@
 .ux-grid-split-resize-handle {
     background-color : #ccc;
 }
+
+.ux-grid-clone > .x-grid-body {
+    margin-top : 10px;
+}
