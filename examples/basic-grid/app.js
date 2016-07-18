@@ -84,7 +84,7 @@ Ext.onReady(function () {
         store       : store,
         region      : 'center',
         columnLines : true,
-        gridSplit   : true, 
+        gridSplit   : true,
         columns     : [ {
             text      : 'Company Name',
             flex      : 1,

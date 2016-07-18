@@ -199,7 +199,15 @@ Ext.define('UX.plugin.grid.Split', {
         if (this.enableScrollSync) {
             this.setupScrollSynchronization();
         }
-        this.setupColumnSync();
+
+        var grid  = this.grid.normalGrid || this.grid;
+        var clone = this.gridClone.normalGrid || this.gridClone;
+
+        this.setupColumnSync(grid.getHeaderContainer(), clone.getHeaderContainer());
+
+        if (this.grid.normalGrid) {
+            this.setupColumnSync(this.grid.lockedGrid.getHeaderContainer(), this.gridClone.lockedGrid.getHeaderContainer());
+        }
     },
 
     setupScrollSynchronization : function () {
@@ -212,8 +220,58 @@ Ext.define('UX.plugin.grid.Split', {
         mainGrid.getHeaderContainer().getScrollable().addPartner(cloneScroll, 'x');
     },
 
-    setupColumnSync : function (headerCt) {
-        // TODO sync on col add, remove, resize, reorder etc
+    setupColumnSync : function (mainHeaderCt, cloneHeaderCt) {
+        cloneHeaderCt.mon(mainHeaderCt, {
+            columnshow     : this.onColumnShow,
+            columnhide     : this.onColumnHide,
+            columnresize   : this.onColumnResize,
+
+            scope : cloneHeaderCt
+        });
+
+        // Column lock/unlock etc, too big change to sync, simply trigger a new split
+        cloneHeaderCt.mon(mainHeaderCt, {
+            columnschanged : this.onColumnsChanged,
+            scope          : this
+        });
+    },
+
+    onColumnShow : function (mainHeaderCt, col) {
+        var cloneHeaderCt = this;
+        var cloneColumns  = cloneHeaderCt.getGridColumns();
+
+        cloneColumns[ mainHeaderCt.items.indexOf(col) ].show();
+    },
+
+    onColumnHide : function (mainHeaderCt, col) {
+        var cloneHeaderCt = this;
+        var cloneColumns  = cloneHeaderCt.getGridColumns();
+
+        cloneColumns[ mainHeaderCt.items.indexOf(col) ].hide();
+    },
+
+    onColumnResize : function (mainHeaderCt, col, width) {
+        var cloneHeaderCt = this;
+        var cloneColumns  = cloneHeaderCt.getGridColumns();
+
+        cloneColumns[ mainHeaderCt.items.indexOf(col) ].setWidth(width);
+    },
+
+    onColumnsChanged : function (mainHeaderCt, col, fromIdx, toIdx) {
+        var grid  = this.grid.normalGrid || this.grid;
+        var clone = this.gridClone.normalGrid || this.gridClone;
+
+        clone.getHeaderContainer().removeAll();
+        clone.getHeaderContainer().add(grid.getHeaderContainer().getGridColumns().map(this.cloneColumn, this));
+
+        if (this.grid.normalGrid) {
+            grid  = this.grid.lockedGrid;
+            clone = this.gridClone.lockedGrid;
+
+            clone.getHeaderContainer().removeAll();
+            clone.getHeaderContainer().add(grid.getHeaderContainer().getGridColumns().map(this.cloneColumn, this));
+
+        }
     },
 
     destroy : function () {
