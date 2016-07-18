@@ -131,7 +131,7 @@ Ext.onReady(function () {
             }
         } ],
         selModel    : {
-            selType : 'cellmodel'
+            selType : 'rowmodel'
         },
         title       : 'Locking Grid Column',
         viewConfig  : {

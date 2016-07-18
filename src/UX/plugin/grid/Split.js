@@ -97,9 +97,11 @@ Ext.define('UX.plugin.grid.Split', {
     },
 
     onMenuTriggerEvent : function (e) {
+        var cell = e.getTarget('.x-grid-cell');
+
         this.menu.showAt(e.getXY());
         this.menu.items.first().setText(this.isSplit() ? this.mergeText : this.splitText);
-        this.splitPos = e.getY() - this.grid.getView().getEl().getY();
+        this.splitPos = Ext.fly(cell).getBottom() - this.grid.getView().getEl().getY();
 
         e.stopEvent();
     },

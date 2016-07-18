@@ -131,7 +131,8 @@ Ext.onReady(function () {
             }
         } ],
         selModel    : {
-            selType : 'cellmodel'
+            selType : 'rowmodel',
+            mode    : 'MULTI'
         },
         height      : 650,
         width       : 800,
