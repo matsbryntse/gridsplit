@@ -144,7 +144,7 @@ Ext.define('UX.plugin.grid.Split', {
             margin      : 0,
             padding     : 0,
             gridSplit   : false,
-            columns     : this.grid.columns.map(this.cloneColumn, this)
+            columns     : this.grid.headerCt.getGridColumns().map(this.cloneColumn, this)
         }, this.grid.initialConfig);
 
         return config;
@@ -154,8 +154,9 @@ Ext.define('UX.plugin.grid.Split', {
 
     cloneColumn : function (col) {
         return col.cloneConfig({
-            width : col.getWidth(),
-            flex  : col.flex
+            width  : col.getWidth(),
+            locked : col.locked,
+            flex   : col.flex
         });
     },
 
