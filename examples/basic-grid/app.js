@@ -133,7 +133,7 @@ Ext.onReady(function () {
         selModel    : {
             selType : 'rowmodel'
         },
-        title       : 'Locking Grid Column',
+        title       : 'Basic Grid',
         viewConfig  : {
             stripeRows : true
         },

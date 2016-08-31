@@ -55,7 +55,7 @@ Ext.define('UX.plugin.grid.Split', {
     gridClone       : null,
     splitCls        : 'ux-grid-split',
     resizeHandleCls : 'ux-grid-split-resize-handle',
-    triggerEvent    : 'itemcontextmenu',
+    triggerEvent    : 'contextmenu',
     splitText       : 'Split',
     mergeText       : 'Hide split section',
 
@@ -72,21 +72,24 @@ Ext.define('UX.plugin.grid.Split', {
 
     init : function (grid) {
 
-        this.createMenu();
+        // Limit to one vertical grid split
+        if (!grid.__cloned) {
+            this.createMenu();
 
-        grid.on('afterlayout', function () {
-            this.setGrid(grid);
-        }, this, { single : true });
+            grid.on('afterlayout', function () {
+                this.setGrid(grid);
+            }, this, { single : true });
+        }
     },
 
     setGrid : function (grid) {
         this.grid = grid;
 
-        grid.on(this.triggerEvent, function (grid, item, node, index, e) {
+        grid.on('item' + this.triggerEvent, function (grid, item, node, index, e) {
             this.onMenuTriggerEvent(e);
         }, this);
 
-        grid.getEl().on('contextmenu', this.onMenuTriggerEvent, this, { delegate : '.' + this.resizeHandleCls });
+        grid.getEl().on(this.triggerEvent, this.onMenuTriggerEvent, this, { delegate : '.' + this.resizeHandleCls });
 
         if (grid.gridSplit) {
             this.split();
@@ -99,9 +102,12 @@ Ext.define('UX.plugin.grid.Split', {
     onMenuTriggerEvent : function (e) {
         var cell = e.getTarget('.x-grid-cell');
 
+        if (cell) {
+            this.splitPos = Ext.fly(cell).getBottom() - this.grid.getView().getEl().getY();
+        }
+
         this.menu.showAt(e.getXY());
         this.menu.items.first().setText(this.isSplit() ? this.mergeText : this.splitText);
-        this.splitPos = Ext.fly(cell).getBottom() - this.grid.getView().getEl().getY();
 
         e.stopEvent();
     },
@@ -278,6 +284,8 @@ Ext.define('UX.plugin.grid.Split', {
     },
 
     destroy : function () {
-        this.menu.destroy();
+        if (this.menu) {
+            this.menu.destroy();
+        }
     }
 })
